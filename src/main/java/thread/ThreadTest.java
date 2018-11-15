@@ -1,5 +1,7 @@
 package thread;
 
+import java.time.Instant;
+import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
@@ -29,14 +31,33 @@ public class ThreadTest {
 //            }).start();
 //            System.out.println("【线程"+ finalI +"进入就绪状态】");
 //        }
-        String a = "1";
-        String b = "2";
-        final String c = "1";
+//        List<Integer> list = new ArrayList<>();
+//        for(int i = 0;i<2000000;i++){
+//            list.add(i);
+//        }
+//        for(int i = 0;i<10;i++){
+//            Collections.shuffle(list);
+//            long start = System.currentTimeMillis();
+//            Integer target = 15609;
+//            for(Integer integer : list){
+//                if(integer.equals(target)){
+//                    System.out.println("找到了！");
+//                    break;
+//                }
+//            }
+//            System.out.println("第"+i+"次查找共花费"+(System.currentTimeMillis()-start)+"毫秒");
+//        }
 
-        String d = c + "2";
-        String e = "12";
-        String f = "1" + "2";
-        String g =  a + b;
-        System.out.println(d==g);
+        Map<String,Integer> map = new HashMap<>();
+        for(int i = 0;i<2000000;i++){
+            map.put(String.valueOf(i),i);
+        }
+        for(int i = 0;i<10;i++){
+            long start = System.currentTimeMillis();
+            String target = "15469";
+            map.get(target);
+            System.out.println("找到了");
+            System.out.println("第"+i+"次查找共花费"+(System.currentTimeMillis()-start)+"毫秒");
+        }
     }
 }
