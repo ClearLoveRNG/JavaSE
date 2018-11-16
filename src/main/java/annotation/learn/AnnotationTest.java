@@ -1,4 +1,4 @@
-package annotation;
+package annotation.learn;
 
 /**
  * Title:注解练习
@@ -34,7 +34,7 @@ public class AnnotationTest {
 //        当没有@Repeatable修饰的时候，注解在同一个位置，只能出现一次
 //        使用@Repeatable之后，再配合一些其他动作，就可以在同一个地方使用多次了。
     public static void main(String[] args) throws Exception {
-        Class<?> clazz = Class.forName("annotation.AnnotationTest");
+        Class<?> clazz = Class.forName("annotation.learn.AnnotationTest");
         MyAnnotation myAnnotation = clazz.getAnnotation(MyAnnotation.class);
         if(myAnnotation == null){
             System.out.println("没有MyAnnotation注解");

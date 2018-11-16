@@ -1,4 +1,4 @@
-package reflect.constructor;
+package reflect.learn.constructor;
 
 
 /**
@@ -6,7 +6,7 @@ package reflect.constructor;
  * Description:
  * Copyright: 2018 北京拓尔思信息技术股份有限公司 版权所有.保留所有权
  * Company:北京拓尔思信息技术股份有限公司(TRS)
- * Project: reflect.constructor
+ * Project: reflect.learn.constructor
  * Author: jianghaotian
  * Create Time:2018/11/2 14:48
  */
@@ -36,7 +36,7 @@ public class ReflectTest {
         //第三种方式获取Class对象
         try {
             //注意此字符串必须是真实路径，就是带包名的类路径，包名.类名
-            Class stuClass3 = Class.forName("reflect.constructor.Student");
+            Class stuClass3 = Class.forName("reflect.learn.constructor.Student");
             //判断三种方式是否获取的是同一个Class对象
             System.out.println(stuClass3 == stuClass2);
         } catch (ClassNotFoundException e) {

@@ -1,4 +1,4 @@
-package reflect.constructor;
+package reflect.learn.constructor;
 
 import java.lang.reflect.Constructor;
 
@@ -7,7 +7,7 @@ import java.lang.reflect.Constructor;
  * Description:
  * Copyright: 2018 北京拓尔思信息技术股份有限公司 版权所有.保留所有权
  * Company:北京拓尔思信息技术股份有限公司(TRS)
- * Project: reflect.constructor
+ * Project: reflect.learn.constructor
  * Author: jianghaotian
  * Create Time:2018/11/13 14:24
  */
@@ -29,7 +29,7 @@ public class ConstructorTest {
      */
     public static void main(String[] args)throws Exception {
         //1.加载Class对象
-        Class clazz = Class.forName("reflect.constructor.Student");
+        Class clazz = Class.forName("reflect.learn.constructor.Student");
 
 
         //2.获取所有公有构造方法

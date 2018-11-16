@@ -1,6 +1,4 @@
-package annotation;
-
-import java.lang.annotation.*;
+package thread.homework.consumerandproducer;
 
 /**
  * Title:
@@ -9,12 +7,7 @@ import java.lang.annotation.*;
  * Company:北京拓尔思信息技术股份有限公司(TRS)
  * Project: test
  * Author: jianghaotian
- * Create Time:2018/11/16 10:46
+ * Create Time:2018/11/16 15:43
  */
-@Target(ElementType.TYPE)
-@Retention(RetentionPolicy.SOURCE)
-@Documented
-public @interface MyAnnotation {
-    String s1();
-    int i2();
+public class Producer {
 }

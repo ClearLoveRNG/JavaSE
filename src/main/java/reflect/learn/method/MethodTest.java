@@ -1,4 +1,4 @@
-package reflect.method;
+package reflect.learn.method;
 
 import java.lang.reflect.Method;
 
@@ -34,7 +34,7 @@ public class MethodTest {
 
     public static void main(String[] args) throws Exception {
         //1.获取Class对象
-        Class stuClass = Class.forName("reflect.method.Student");
+        Class stuClass = Class.forName("reflect.learn.method.Student");
         //2.获取所有公有方法
         System.out.println("***************获取所有的”公有“方法*******************");
         stuClass.getMethods();

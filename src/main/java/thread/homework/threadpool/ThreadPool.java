@@ -1,4 +1,4 @@
-package thread.homework;
+package thread.homework.threadpool;
 
 import java.util.LinkedList;
 
