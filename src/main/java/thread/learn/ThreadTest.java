@@ -37,7 +37,8 @@ public class ThreadTest {
 //    xxx.notify();xxx.notifyAll();
 //    调用某个对象的notify()方法能够唤醒一个正在等待这个对象的monitor的线程，如果有多个线程都在等待这个对象的monitor，则只能唤醒其中一个线程；
 //    调用notifyAll()方法能够唤醒所有正在等待这个对象的monitor的线程，唤醒的线程获得锁的概率是随机的，取决于cpu调度
-//    notify()或者notifyAll()方法并不是真正释放锁，必须等到synchronized方法或者语法块执行完才真正释放锁
+//    notify()或者notifyAll()方法并不是真正释放锁，必须等到synchronized方法或者语法块执行完才真正释放锁,
+//    notifyAll() 方法，起到的是一个通知作用，不释放锁，也不获取锁。只是告诉该对象上等待的线程“可以竞争执行了，都醒来去执行吧”
 
     //注意：
 //       流程上wait方法一定要在notify或者notifyAll方法前面，因为不唤醒的话会一直等待下去，造成线程死掉
