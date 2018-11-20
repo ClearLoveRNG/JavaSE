@@ -1,5 +1,8 @@
 package thread.homework.consumerandproducer;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Title:生产者
  * Description:
