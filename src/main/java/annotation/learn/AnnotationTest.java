@@ -1,5 +1,7 @@
 package annotation.learn;
 
+import java.util.Objects;
+
 /**
  * Title:注解练习
  * Description:
@@ -37,7 +39,7 @@ public class AnnotationTest {
         Class<?> clazz = Class.forName("annotation.learn.AnnotationTest");
         MyAnnotation myAnnotation = clazz.getAnnotation(MyAnnotation.class);
         if(myAnnotation == null){
-            System.out.println("没有MyAnnotation注解");
+            System.out.println("没有MyAnnotation注解11111111111111");
         } else {
             System.out.println(myAnnotation.i2());
             System.out.println(myAnnotation.s1());
