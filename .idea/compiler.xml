@@ -6,10 +6,14 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="JavaEE" />
+        <module name="JavaLearn" />
         <module name="test" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="JavaEE" target="1.8" />
+      <module name="JavaLearn" target="1.8" />
       <module name="test" target="1.8" />
     </bytecodeTargetLevel>
   </component>

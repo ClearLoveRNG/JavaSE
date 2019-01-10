@@ -1,5 +1,5 @@
 <component name="ArtifactManager">
-  <artifact type="exploded-war" name="test:war exploded">
+  <artifact type="exploded-war" name="JavaEE:war exploded">
     <output-path>$PROJECT_DIR$/target/reflect.learn.constructor</output-path>
     <root id="root">
       <element id="directory" name="WEB-INF">
