@@ -1,7 +1,5 @@
 package annotation.learn;
 
-import java.util.Objects;
-
 /**
  * Title:注解练习
  * Description:
