@@ -1,6 +1,12 @@
 <component name="ArtifactManager">
   <artifact type="war" name="JavaEE:war">
     <output-path>$PROJECT_DIR$/target</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <module>JavaEE</module>
+        <packaging>war</packaging>
+      </options>
+    </properties>
     <root id="archive" name="reflect.learn.constructor.war">
       <element id="artifact" artifact-name="JavaEE:war exploded" />
     </root>
