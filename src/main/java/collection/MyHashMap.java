@@ -83,11 +83,15 @@ import java.util.HashMap;
 public class MyHashMap{
     public static void main(String[] args) {
 
-
+        //初始化
+        //get
+        //put
+        //扩容
 
         HashMap<String, String> hashMap = new HashMap<>(8);
         hashMap.put("姓名","蒋浩天");
         hashMap.put("职业","Java");
+        hashMap.get("");
 
         while(hashMap.keySet().iterator().hasNext()){
             hashMap.remove(hashMap.keySet().iterator().next());
