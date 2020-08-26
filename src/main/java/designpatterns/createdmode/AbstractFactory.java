@@ -1,4 +1,4 @@
-package design_patterns.createdmode;
+package designpatterns.createdmode;
 
 /**
  * Title: 创建性模式-抽象工厂模式

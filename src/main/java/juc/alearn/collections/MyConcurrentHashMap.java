@@ -10,7 +10,6 @@ package juc.alearn.collections;
  * Create Time: 2020-04-08 11:42
  */
 
-import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -25,10 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * JDK1.8则使用数组+链表+红黑树数据结构和CAS原子操作和synchronized实现ConcurrentHashMap
  *
- * 为什么HashTable慢
- *      Hashtable之所以效率低下主要是因为其实现使用了synchronized关键字对put等操作进行加锁，
- *      而synchronized关键字加锁是对整个对象进行加锁，也就是说在进行put等修改Hash表的操作时，
- *      锁住了整个Hash表，从而使得其表现的效率低下。
+ *
  *
  *
  *

@@ -60,7 +60,7 @@ import java.util.concurrent.locks.AbstractQueuedSynchronizer;
  *  Exclusive(独占)：只有一个线程能执行，如ReentrantLock。又可分为公平锁和非公平锁：
  *         公平锁：按照线程在队列中的排队顺序，先到者先拿到锁
  *         非公平锁：当线程要获取锁时，无视队列顺序直接去抢锁，谁抢到就是谁的
- *  Share(共享)：多个线程可同时执行，如Semaphore/CountDownLatch。Semaphore、CountDownLatCh、 CyclicBarrier、ReadWriteLock
+ *  Share(共享)：多个线程可同时执行，如Semaphore/CountDownLatch。Semaphore、CountDownLatch、 CyclicBarrier、ReadWriteLock
  *
  *
  *  使用者继承AbstractQueuedSynchronizer并重写指定的方法。(这些重写方法很简单，无非是对于共享资源state的获取和释放)
@@ -114,6 +114,12 @@ import java.util.concurrent.locks.AbstractQueuedSynchronizer;
  *
  *      释放资源之后，如果自己的等待状态是-1，则会唤醒等待状态<=0的节点(unpark)，并把head指向后缀节点，然后把自己干掉，方便GC
  *
+ *  独占：
+ *      独占式的锁会去判断是否为后继节点，只有后继节点才有资格在头节点释放了同步状态以后获取到同步状态
+ *  共享：
+ *
+ *
+ *
  *  详细文章：https://www.jianshu.com/p/0f6d3530d46b
  *          https://blog.csdn.net/wry7162416/article/details/89323707
  */
@@ -135,5 +141,7 @@ public class MyAQS extends AbstractQueuedSynchronizer {
         return super.isHeldExclusively();
     }
 
+    public static void main(String[] args) {
 
+    }
 }

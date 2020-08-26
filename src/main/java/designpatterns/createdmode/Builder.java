@@ -1,4 +1,4 @@
-package design_patterns.createdmode;
+package designpatterns.createdmode;
 
 /**
  * Title: 创建者模式-建造者模式

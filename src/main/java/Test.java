@@ -1,6 +1,8 @@
 import sun.misc.Unsafe;
 
+import java.io.*;
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -14,35 +16,33 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class Test {
 
-    public static AtomicInteger integer = new AtomicInteger(0);
-
-    public static final int THREAD_COUNT = 20;
-
-    private static void increase() {
-        integer.incrementAndGet();
-        Thread thread = Thread.currentThread();
-        System.out.println("当前线程名字:"+thread.getName());
-    }
-
     public static void main(String[] args) throws Exception {
-//        for (int i = 0; i < THREAD_COUNT; i++) {
-//            new Thread(Test::increase).start();
-//        }
-//
-//        while (Thread.activeCount() > 2) {
-//            System.out.println("当前线程:"+Thread.currentThread().getName()+"让出竞争位置");
-//            Thread.yield();
-//        }
-//        Thread.currentThread().getThreadGroup().list();
-//
-//        System.out.println("多线程并发后:" + integer);
-        Field field = Unsafe.class.getDeclaredField("theUnsafe");
-        field.setAccessible(true);
-        Unsafe unsafe = (Unsafe) field.get(null);
-        System.out.println(unsafe.addressSize());
+        if(false){
+            System.out.println(1);
+        }
+        Integer a = 1;
+        Integer b = 2;
+        Integer c = 3;
+        Integer d = 3;
+        Integer e = 321;
+        Integer f = 321;
+        Integer z = 320;
+        Long g = 3L;
+        //1.Integer如果在-127至128之间，会使用Integer在缓存中创建好的对象，超过这个范围才在堆上new新对象
+        //2.包装类使用==进行比较的时候，如果遇到运算符会进行拆箱，没有运算符则一直保持装箱状态
+        //3.包装类使用equal()方法进行比较的时候,如果两边的类型不一样，则不进行类型转换
 
-        Thread.currentThread().wait(10);
+        //1
+        System.out.println(c == d);//true
+        System.out.println(e == f);//false
+        //2
+        System.out.println(c == (a + b));//true
+        System.out.println(c.equals(a + b));//true
+        //3
+        System.out.println(g == (a + b));//true
+        System.out.println(g.equals(a + b));//false
     }
+
 }
 
 

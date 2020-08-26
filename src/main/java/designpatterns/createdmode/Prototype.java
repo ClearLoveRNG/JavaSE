@@ -1,4 +1,4 @@
-package design_patterns.createdmode;
+package designpatterns.createdmode;
 
 /**
  * Title: 创建性模式-原型模式
