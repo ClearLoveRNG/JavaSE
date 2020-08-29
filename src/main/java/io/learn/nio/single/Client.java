@@ -55,8 +55,9 @@ public class Client {
                             socketChannel1.register(selector, SelectionKey.OP_WRITE | SelectionKey.OP_READ);
                         }
                     } else if (key.isReadable()){
+                        //这里注释如果放开，server端和client端会互相read完了write，write完了read，死循环
+                        //key.interestOps(key.interestOps() | SelectionKey.OP_WRITE);
                         NIOUtil.readFromSocketChannel(key);
-//                        key.interestOps(key.interestOps() | SelectionKey.OP_WRITE);
                     } else if(key.isWritable()) {
                         //写事件，和读事件很类似
                         NIOUtil.writeToSocketChannel(key,"服务端你妈死了");
