@@ -18,6 +18,5 @@ import java.util.concurrent.Executors;
  */
 public class Executor {
     public static void main(String[] args) {
-        Executors.newFixedThreadPool(1);
     }
 }
