@@ -11,6 +11,6 @@ package io.learn.aio;
  */
 public class Client {
     public static void main(String[] args) {
-
+        //使用BIO的Client代码测试即可
     }
 }
