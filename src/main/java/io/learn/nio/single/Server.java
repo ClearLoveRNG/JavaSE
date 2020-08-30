@@ -5,10 +5,10 @@ import io.learn.nio.NIOUtil;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.nio.ByteBuffer;
-import java.nio.channels.*;
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
+import java.nio.channels.SelectionKey;
+import java.nio.channels.Selector;
+import java.nio.channels.ServerSocketChannel;
+import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -92,14 +92,50 @@ public class Server {
      *      通过配置监听的通道 Channel 为非阻塞，那么当 Channel 上的 IO 事件还未到达时，
      *      就不会进入阻塞状态一直等待，而是继续轮询其它 Channel，找到 IO 事件已经到达的 Channel 执行
      *
+     *      比如：socketChannel.configureBlocking(false)了之后，注册了OP_READ事件，当事件来临，
+     *      SocketChannel.read 没读到数据也会返回，返回参数等于0。
      *
+     * 有一个坑 OP_WRITE事件
+     *      OP_WRITE事件的就绪条件并不是发生在调用channel的write方法之后，而是在当底层缓冲区有空闲空间的情况下。
+     *      因为写缓冲区在绝大部分时候都是有空闲空间的，所以如果你注册了写事件，这会使得写事件一直处于就就绪，选择处理现场就会一直占用着CPU资源。所以，只有当你确实有数据要写时再注册写操作，并在写完以后马上取消注册。
+     *      其实，在大部分情况下，我们直接调用channel的write方法写数据就好了，没必要都用OP_WRITE事件。那么OP_WRITE事件主要是在什么情况下使用的了？
+     *      其实OP_WRITE事件主要是在发送缓冲区空间满的情况下使用的。如：
+     *
+     *      while (buffer.hasRemaining()) {
+     *          int len = socketChannel.write(buffer);
+     *          if (len == 0) {
+     *              selectionKey.interestOps(selectionKey.interestOps() | SelectionKey.OP_WRITE);
+     *              selector.wakeup();
+     *              break;
+     *          }
+     *      }
+     *      selectionKey.interestOps(sk.interestOps() & ~SelectionKey.OP_WRITE);
+     *
+     *
+     *      (一次要写100个字节，但是缓冲区只有64个，那就写完这次再注册WRITE事件，同时唤醒阻塞在select方法的selector，让下一次轮询开始)
+     *      当buffer还有数据，但缓冲区已经满的情况下，socketChannel.write(buffer)会返回已经写出去的字节数，此时为0。
+     *      那么这个时候我们就需要注册OP_WRITE事件，这样当缓冲区又有空闲空间的时候就会触发OP_WRITE事件，这是我们就可以继续将没写完的数据继续写出了。
+     *      而且在写完后，一定要记得将OP_WRITE事件注销：selectionKey.interestOps(sk.interestOps() & ~SelectionKey.OP_WRITE);
+     *      注意，这里在修改了interest之后调用了wakeup()；方法是为了唤醒被堵塞的selector方法，这样当while中判断selector返回的是0时，会再次调用selector.select()。
+     *      而selectionKey的interest是在每次selector.select()操作的时候注册到系统进行监听的，所以在selector.select()调用之后修改的interest需要在下一次selector.select()调用才会生效。
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     * 详细信息：https://www.jianshu.com/p/1af407c043cb
      */
     public static void main(String[] args) throws IOException {
 
         //Java NIO中的 ServerSocketChannel 是一个可以监听新进来的TCP连接的通道, 就像标准IO中的ServerSocket一样
         ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
         //绑定好服务端的ip和端口
-        serverSocketChannel.bind(new InetSocketAddress("127.0.0.1",8989));
+        serverSocketChannel.bind(new InetSocketAddress("127.0.0.1", 8989));
 
         //创建selector
         Selector selector = Selector.open();
@@ -112,8 +148,8 @@ public class Server {
 
         //select()方法意思是，开始轮询注册到我身上的通道里，有没有事件发生
         //因为一次 select() 调用不能处理完所有的事件，并且服务器端有可能需要一直监听事件，因此服务器端处理事件的代码一般会放在一个死循环内。
-        while(true){
-            System.out.println(DateUtil.now()+"等待轮询事件.......");
+        while (true) {
+            System.out.println(DateUtil.now() + "等待轮询事件.......");
             //select()阻塞到至少有一个通道在你注册的事件上就绪了。
             //select(long timeout)和select()一样，除了最长会阻塞timeout毫秒(参数)。
             //selectNow()不会阻塞，不管什么通道就绪都立刻返回（译者注：此方法执行非阻塞的选择操作。如果自从前一次选择操作后，没有通道变成可选择的，则此方法直接返回零。）。
@@ -121,7 +157,7 @@ public class Server {
             int select = selector.select();
 
             if (select > 0) {
-                System.out.println("轮询成功！事件数量:"+select);
+                System.out.println("轮询成功！事件数量:" + select);
                 //获取轮训出来的事件
                 //keys里存的就是selector轮询完一次，收到要处理的事件集合
                 Set<SelectionKey> keys = selector.selectedKeys();
@@ -137,7 +173,7 @@ public class Server {
                         //key.channel()的意思是，拿到这个key对应的channel，也就是谁往selector注册的就是谁
                         //在非阻塞模式下，accept() 方法会立刻返回，如果还没有新进来的连接,返回的将是null
                         //返回值SocketChannel包含了客户端的数据以及客户端通道本身
-                        SocketChannel socketChannel = ((ServerSocketChannel)key.channel()).accept();
+                        SocketChannel socketChannel = ((ServerSocketChannel) key.channel()).accept();
                         if (socketChannel != null) {
                             //这个也要设置非阻塞
                             socketChannel.configureBlocking(false);
@@ -150,9 +186,9 @@ public class Server {
                         key.interestOps(key.interestOps() | SelectionKey.OP_WRITE);
                         //既然是读操作，证明一定是已经和客户端建立好连接，所以此时的key.channel()，返回的是客户端的SocketChannel,里面包含了客户端发来的数据
                         NIOUtil.readFromSocketChannel(key);
-                    } else if(key.isWritable()) {
+                    } else if (key.isWritable()) {
                         //写事件，和读事件很类似
-                        NIOUtil.writeToSocketChannel(key,"客户端曹尼玛");
+                        NIOUtil.writeToSocketChannel(key, "客户端曹尼玛");
                     }
                     //处理完事件要删除，要不然下一次轮询又要再来一遍
                     keyIterator.remove();
