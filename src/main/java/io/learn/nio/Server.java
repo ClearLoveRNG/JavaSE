@@ -1,7 +1,6 @@
-package io.learn.nio.single;
+package io.learn.nio;
 
 import cn.hutool.core.date.DateUtil;
-import io.learn.nio.NIOUtil;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -11,6 +10,8 @@ import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Title: NIO（Non-BlockingIO）非阻塞IO   单线程模型
@@ -130,6 +131,9 @@ public class Server {
      *
      * 详细信息：https://www.jianshu.com/p/1af407c043cb
      */
+
+    private static final ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+
     public static void main(String[] args) throws IOException {
 
         //Java NIO中的 ServerSocketChannel 是一个可以监听新进来的TCP连接的通道, 就像标准IO中的ServerSocket一样
@@ -182,13 +186,26 @@ public class Server {
                             System.out.println("处理Accept事件完成");
                         }
                     } else if (key.isReadable()) {
-                        //先监听WRITE事件，防止read时候出现异常导致key.cancel()方法生效，从而导致interestOps()异常
-                        key.interestOps(key.interestOps() | SelectionKey.OP_WRITE);
-                        //既然是读操作，证明一定是已经和客户端建立好连接，所以此时的key.channel()，返回的是客户端的SocketChannel,里面包含了客户端发来的数据
-                        NIOUtil.readFromSocketChannel(key);
+                        executorService.submit(()->{
+                            //先监听WRITE事件，防止read时候出现异常导致key.cancel()方法生效，从而导致interestOps()异常
+                            key.interestOps(key.interestOps() | SelectionKey.OP_WRITE);
+                            //既然是读操作，证明一定是已经和客户端建立好连接，所以此时的key.channel()，返回的是客户端的SocketChannel,里面包含了客户端发来的数据
+                            try {
+                                NIOUtil.readFromSocketChannel(key);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        });
+
                     } else if (key.isWritable()) {
-                        //写事件，和读事件很类似
-                        NIOUtil.writeToSocketChannel(key, "客户端曹尼玛");
+                        executorService.submit(()->{
+                            //写事件，和读事件很类似
+                            try {
+                                NIOUtil.writeToSocketChannel(key, "客户端曹尼玛");
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        });
                     }
                     //处理完事件要删除，要不然下一次轮询又要再来一遍
                     keyIterator.remove();
